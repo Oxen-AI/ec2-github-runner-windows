@@ -22,7 +22,7 @@ inputs:
     required: false
   ec2-instance-type:
     description: >-
-      EC2 Instance Type. 
+      EC2 Instance Type.
       This input is required if you use the 'start' mode.
     required: false
   ec2-os:
@@ -39,11 +39,25 @@ inputs:
     required: false
   security-group-id:
     description: >-
-      EC2 Security Group Id. 
+      EC2 Security Group Id.
       The security group should belong to the same VPC as the specified subnet.
       The runner doesn't require any inbound traffic. However, outbound traffic should be allowed.
       This input is required if you use the 'start' mode.
     required: false
+  startup-quiet-period-seconds:
+    description: >-
+      Specifies the quiet period in seconds after the instance starts.
+      The runner will not be registered during this period.
+    required: false
+  startup-retry-interval-seconds:
+    description: >-
+      Specifies the retry interval in seconds to register the runner after the quiet period.
+    required: false
+  startup-timeout-minutes:
+    description: >-
+      Specifies the timeout in minutes to register the runner after the quiet period.
+    required: false
+    default: '5'
   label:
     description: >-
       Name of the unique label assigned to the runner.
