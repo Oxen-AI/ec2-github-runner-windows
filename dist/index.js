@@ -159686,7 +159686,7 @@ function buildUserDataScript(githubRegistrationToken, label) {
     } else {
       return [
         '<powershell>',
-        'mkdir actions-runner; cd actions-runner',
+        'mkdir C:\\actions-runner; cd C:\\actions-runner',
         'echo "${config.input.preRunnerScript}" > pre-runner-script.ps1',
         '& pre-runner-script.ps1',
         `Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-win-x64-${runnerVersion}.zip -OutFile actions-runner-win-x64-${runnerVersion}.zip`,
