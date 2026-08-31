@@ -2,8 +2,6 @@ const { EC2Client, RunInstancesCommand, TerminateInstancesCommand, waitUntilInst
 const core = require('@actions/core');
 const config = require('./config');
 
-const runnerVersion = '2.309.0'
-
 // User data scripts are run as the root user
 function buildUserDataScript(githubRegistrationToken, label) {
   core.info(`Building data script for ${config.input.ec2Os}`)
@@ -29,8 +27,10 @@ function buildUserDataScript(githubRegistrationToken, label) {
         'mkdir C:\\actions-runner; cd C:\\actions-runner',
         'echo "${config.input.preRunnerScript}" > pre-runner-script.ps1',
         '& pre-runner-script.ps1',
-        `Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-win-x64-${runnerVersion}.zip -OutFile actions-runner-win-x64-${runnerVersion}.zip`,
-        `Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-${runnerVersion}.zip", "$PWD")`,
+        "$runnerVersion = (Invoke-RestMethod -Uri https://api.github.com/repos/actions/runner/releases/latest).tag_name.TrimStart('v')",
+        '$runnerZip = "actions-runner-win-x64-$runnerVersion.zip"',
+        'Invoke-WebRequest -Uri "https://github.com/actions/runner/releases/download/v$runnerVersion/$runnerZip" -OutFile $runnerZip',
+        'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/$runnerZip", "$PWD")',
         `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
         './run.cmd',
         '</powershell>',
